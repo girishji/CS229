@@ -1,0 +1,59 @@
+AI > ML > Deep learning
+
+ML: given (X, y), find relation. X can be x1, x2, ...
+Regression is for y being continuous variable.
+Classification is when y is descrete (ex. given lump
+	size, is tumor benign/malign)
+
+SVM (support vector machines) uses infinite number of X_i's
+(infinite dimensional vector of Xs (inputs)) for prediction.
+
+X - input
+Y - label
+Supervised learning: you are given (X, Y) for training set.
+
+Machine learning algorithm strategy: why some teams is elite
+companies can't solve ML problems? They waste 6 months
+when someone could have told them what they are doing won't work.
+
+Good ML practitioners are STRATEGIC: do you collect more data?
+if so, what kind of data?
+do you try different learning algo? or use a different GPU?
+you need to make lot of decisions.
+Become more systematic in applying ML as a engineering discipline.
+It is like SW engineering.
+ML algorithm almost never works the first time. Your effectivelness
+depends on how quickly you can debug the problem.
+Evolve from black magic/tribal knowledge/experience based to
+a systematic engineering process (he will teach you this.)
+(this is also in his book "Machine learning yearning".)
+
+Deep learning is part of ML that is hot right now. He will
+teach how to train Neural Networks.
+CS230 covers deep learning more narrowly.
+
+Then he will cover Unsupervised learning.
+Google news uses this approach to group together similar articles.
+You are given X (no Y) and you have to find interesting
+things about the data.
+cocktail party problem: In a noisy room if you stick microphone 
+in multiple locations and record voices, then you try to 
+separate out voices, 
+it is a unsupervised learning problem
+
+Most economic value is created in Supervised learning. But
+he uses unuspervised learning also.
+
+Finally he covers Reinforcement learning.
+There is no optimal way to fly a helicopter. Like training a dog,
+where you let the dog do whatever it wants, but when it does
+something you want, you reward; and in othercases you punish.
+If helicopter flies well, you reinforce (give reward signals)
+ it and make it do more.
+Used in playing games, optimizing robots.
+
+ 
+
+
+
+

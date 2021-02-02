@@ -1,0 +1,31 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r message=FALSE, warning=FALSE}
+library(data.table)
+library(ggplot2)
+library(magrittr)
+```
+
+Plot Gaussian probability density function
+
+```{r}
+sd <- 100
+# we know mean is 0
+
+P <- function(x) (1 / (sqrt(2 * pi) * sd)) * exp(- (x**2 / (2 * sd**2)))
+
+dt <- data.table(X = seq(-1000, 1000))[, ProbDensity := mapply(P, X)]
+ggplot(dt) + geom_point(aes(x = X, y = ProbDensity))
+```
+
+Integrate the area under the curve (should be 1)
+```{r}
+# in small rectangles, delta_x is 1
+dt[, sum(ProbDensity)]
+```
+

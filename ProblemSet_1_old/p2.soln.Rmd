@@ -1,0 +1,112 @@
+---
+title: "Problem 2"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r message=FALSE, warning=FALSE}
+library(data.table)
+library(magrittr)
+library(ggplot2)
+```
+
+Read data.
+
+```{r}
+Xd <- fread("q2/data/x.dat", col.names = c("x1", "x2"))
+Yd <- fread("q2/data/y.dat", col.names = c("y"))
+cbind(Xd, Yd)
+```
+
+Plot data.
+
+```{r}
+cbind(Xd, Yd[, as.factor(y)]) %>% ggplot() + geom_point(aes(x1, x2, color = V2))
+```
+
+lwlr function:
+
+```{r}
+# Hypothesis
+hyp <- function(theta, x) {
+  return(1 / (1 + exp(-1 * sum(x * theta))))
+}
+
+# Learning 
+learn <- function(X, Y, x_p, tau, theta) {
+
+  # Weights
+  Wt <- Xd[, exp(-1 * ((x_p[2] - x1)**2 + (x_p[3] - x2)**2) / (2 * tau**2))]
+  
+  # Hypothesis
+  H <- apply(X, 1, function(r) hyp(theta, r))
+
+  # Gradient of log likelihood
+  lambda <- 0.0001
+  Z <- Wt * (Y - H)
+  grad_ll <- (t(X) %*% Z) - (lambda * theta)
+  
+  # Hessian
+  D <- diag(x = -Wt * H * (1 - H))
+  H <- (t(X) %*% D %*% X) - (lambda * diag(x = 1, 3))
+  H_inv <- solve(H) # inverse
+
+  return(H_inv %*% grad_ll)
+}
+
+# Locally weighted logical regression
+lwlr <- function(Xd, Yd, x, tau) {
+  # Design matrix: add column of 1s to account for theta_0
+  X <- matrix(c(rep(1, nrow(Xd)), Xd[, x1], Xd[, x2]), nrow = nrow(Xd))
+  # Y vector
+  Y <- Yd[, y]
+  # Initialize parameters
+  theta <- c(rep(1, ncol(Xd) + 1))
+  # print(theta)
+  
+  repeat {
+    nTheta <- theta - learn(X, Y, x, tau, theta)
+    # print(nTheta)
+    if (all(abs(nTheta - theta) < 0.0001 * abs(theta))) {
+      break
+    }
+    theta <- nTheta
+  }
+  
+  return(if (hyp(nTheta, x) > 0.5) 1 else 0)
+}
+```
+
+Plot the decision boundary.
+
+
+```{r}
+plot_lwlr <- function(Xd, Yd, tau, resolution) {
+  ticks <- seq(from = -1, to = 1, length.out = resolution)
+  x1_ticks <- c()
+  for (r in ticks) {
+    x1_ticks <- c(x1_ticks, rep(r, resolution))
+  }
+  db <- data.table(x1 = x1_ticks)
+  db <- cbind(db, x2 = ticks)
+  db[, prediction := mapply(function(c1, c2) lwlr(Xd, Yd, c(1, c1, c2), tau), x1, x2)]
+  db[, prediction := as.factor(prediction)]
+  
+  db %>% ggplot() + geom_point(aes(x1, x2, color = prediction))
+}
+
+tau = 1
+plot_lwlr(Xd, Yd, tau, 50)
+
+```
+
+```{r}
+tau = 0.5
+plot_lwlr(Xd, Yd, tau, 50)
+```
+```{r}
+tau = 0.3
+plot_lwlr(Xd, Yd, tau, 50)
+```

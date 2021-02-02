@@ -1,0 +1,3 @@
+solutions in https://github.com/ccombier/stanford-CS229
+also
+https://github.com/zyxue/stanford-cs229
